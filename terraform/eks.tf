@@ -6,7 +6,7 @@ resource "aws_eks_cluster" "k8s" {
 
   vpc_config {
     # security_group_ids      = [aws_security_group.eks_cluster.id, aws_security_group.eks_nodes.id]
-    subnet_ids              = [aws_subnet.my-web_subnets.id[count.index], aws_subnet.private.id[count.index]]
+    subnet_ids              = [aws_subnet.my-web_subnets[count.index], aws_subnet.private[count.index]]
     endpoint_private_access = true
     endpoint_public_access  = true
     public_access_cidrs     = ["0.0.0.0/0"]
