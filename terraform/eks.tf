@@ -112,7 +112,7 @@ POLICY
 }
 
 resource "aws_subnet" "public-1" {
-  cidr_block              = "10.0.1.0/24"
+  cidr_block              = "10.0.11.0/24"
   availability_zone       = var.availability_zone[0]
   vpc_id                  = aws_vpc.my-web_vpc.id
   map_public_ip_on_launch = true
@@ -121,7 +121,7 @@ resource "aws_subnet" "public-1" {
   }
 }
 resource "aws_subnet" "public-2" {
-  cidr_block              = "10.0.2.0/24"
+  cidr_block              = "10.0.24.0/24"
   availability_zone       = var.availability_zone[1]
   vpc_id                  = aws_vpc.my-web_vpc.id
   map_public_ip_on_launch = true
@@ -130,7 +130,7 @@ resource "aws_subnet" "public-2" {
   }
 }
 resource "aws_subnet" "private-1" {
-  cidr_block        = "10.0.3.0/24"
+  cidr_block        = "10.0.98.0/24"
   availability_zone = var.availability_zone[0]
   vpc_id            = aws_vpc.my-web_vpc.id
   tags = {
@@ -138,7 +138,7 @@ resource "aws_subnet" "private-1" {
   }
 }
 resource "aws_subnet" "private-2" {
-  cidr_block        = "10.0.3.0/24"
+  cidr_block        = "10.0.35.0/24"
   availability_zone = var.availability_zone[1]
   vpc_id            = aws_vpc.my-web_vpc.id
   tags = {
