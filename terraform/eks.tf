@@ -22,7 +22,7 @@ resource "aws_eks_cluster" "k8s" {
 
 # EKS Cluster IAM Role
 resource "aws_iam_role" "cluster" {
-  name = "${var.env_prefix}-Cluster-Role"
+  name = "${var.env_prefix}-clusterRole"
 
   assume_role_policy = <<POLICY
 {
@@ -105,7 +105,7 @@ resource "aws_eks_node_group" "k8s_ng" {
 
 # EKS Node IAM Role
 resource "aws_iam_role" "node" {
-  name = "${var.env_prefix}-Worker-Role"
+  name = "${var.env_prefix}-Role"
 
   assume_role_policy = <<POLICY
 {
