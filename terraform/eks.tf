@@ -138,7 +138,7 @@ resource "aws_subnet" "private-1" {
   }
 }
 resource "aws_subnet" "private-2" {
-  cidr_block        = "10.0.32.0/10"
+  cidr_block        = "10.0.32.0/19"
   availability_zone = var.availability_zone[1]
   vpc_id            = aws_vpc.my-web_vpc.id
   tags = {
