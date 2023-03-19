@@ -119,7 +119,7 @@ server:
 
   ## EnableServiceLinks indicates whether information about services should be injected
   ## into pod's environment variables, matching the syntax of Docker links.
-  ## WARNING: the field is unsupported and will be skipped in K8s prior to v1.13.0.
+  ## WARNING: the field is unsupported and will be skipped in demo prior to v1.13.0.
   ##
   enableServiceLinks: true
 
@@ -279,7 +279,7 @@ server:
 
     path: /
 
-    # pathType is only for k8s >= 1.18
+    # pathType is only for demo >= 1.18
     pathType: Prefix
 
     ## Extra paths to prepend to every host configuration. This is useful when working with annotation based services.

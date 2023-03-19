@@ -18,7 +18,7 @@ controller:
   image:
     ## Keep false as default for now!
     chroot: false
-    registry: registry.k8s.io
+    registry: registry.demo.io
     image: ingress-nginx/controller
     ## for backwards compatibility consider setting the full image url via the repository value below
     ## use *either* current default registry/image or repository format or installing chart by providing the values.yaml will fail
@@ -52,7 +52,7 @@ controller:
   hostname: {}
   # -- Optionally change this to ClusterFirstWithHostNet in case you have 'hostNetwork: true'.
   # By default, while using host network, name resolution uses the host's DNS. If you wish nginx-controller
-  # to keep resolving names inside the k8s network, use ClusterFirstWithHostNet.
+  # to keep resolving names inside the demo network, use ClusterFirstWithHostNet.
   dnsPolicy: ClusterFirst
   # -- Bare-metal considerations via the host network https://kubernetes.github.io/ingress-nginx/deploy/baremetal/#via-the-host-network
   # Ingress status was blank because there is no Service exposing the NGINX Ingress controller in a configuration using the host network, the default --publish-service flag used in standard cloud setups does not apply
@@ -88,7 +88,7 @@ controller:
   # -- Election ID to use for status update, by default it uses the controller name combined with a suffix of 'leader'
   electionID: ""
   ## This section refers to the creation of the IngressClass resource
-  ## IngressClass resources are supported since k8s >= 1.18 and required since k8s >= 1.19
+  ## IngressClass resources are supported since demo >= 1.18 and required since demo >= 1.19
   ingressClassResource:
     # -- Name of the ingressClass
     name: nginx
@@ -97,7 +97,7 @@ controller:
     # -- Is this the default ingressClass for the cluster
     default: false
     # -- Controller-value of the controller that is processing this ingressClass
-    controllerValue: "k8s.io/ingress-nginx"
+    controllerValue: "demo.io/ingress-nginx"
     # -- Parameters is a link to a custom resource containing additional
     # configuration for the controller. This is optional if the controller
     # does not require extra parameters.
@@ -362,7 +362,7 @@ controller:
     apiVersion: "keda.sh/v1alpha1"
     ## apiVersion changes with keda 1.x vs 2.x
     ## 2.x = keda.sh/v1alpha1
-    ## 1.x = keda.k8s.io/v1alpha1
+    ## 1.x = keda.demo.io/v1alpha1
     enabled: false
     minReplicas: 1
     maxReplicas: 11
@@ -536,7 +536,7 @@ controller:
 
   opentelemetry:
     enabled: false
-    image: registry.k8s.io/ingress-nginx/opentelemetry:v20230107-helm-chart-4.4.2-2-g96b3d2165@sha256:331b9bebd6acfcd2d3048abbdd86555f5be76b7e3d0b5af4300b04235c6056c9
+    image: registry.demo.io/ingress-nginx/opentelemetry:v20230107-helm-chart-4.4.2-2-g96b3d2165@sha256:331b9bebd6acfcd2d3048abbdd86555f5be76b7e3d0b5af4300b04235c6056c9
     containerSecurityContext:
       allowPrivilegeEscalation: false
   admissionWebhooks:
@@ -593,7 +593,7 @@ controller:
     patch:
       enabled: true
       image:
-        registry: registry.k8s.io
+        registry: registry.demo.io
         image: ingress-nginx/kube-webhook-certgen
         ## for backwards compatibility consider setting the full image url via the repository value below
         ## use *either* current default registry/image or repository format or installing chart by providing the values.yaml will fail
@@ -727,7 +727,7 @@ defaultBackend:
   enabled: false
   name: defaultbackend
   image:
-    registry: registry.k8s.io
+    registry: registry.demo.io
     image: defaultbackend-amd64
     ## for backwards compatibility consider setting the full image url via the repository value below
     ## use *either* current default registry/image or repository format or installing chart by providing the values.yaml will fail

@@ -18,11 +18,11 @@ terraform {
 }
 
 
-data "aws_eks_cluster" "k8s" {
-  name = "k8s"
+data "aws_eks_cluster" "demo" {
+  name = "demo"
 }
-data "aws_eks_cluster_auth" "k8s_auth" {
-  name = "k8s_auth"
+data "aws_eks_cluster_auth" "demo_auth" {
+  name = "demo_auth"
 }
 
 
@@ -32,25 +32,25 @@ provider "aws" {
 
 provider "helm" {
   kubernetes {
-    #host                   = data.aws_eks_cluster.k8s.endpoint
-    # cluster_ca_certificate = base64decode(data.aws_eks_cluster.k8s.certificate_authority[0].data)
-    #token                  = data.aws_eks_cluster_auth.k8s_auth.token
+    #host                   = data.aws_eks_cluster.demo.endpoint
+    # cluster_ca_certificate = base64decode(data.aws_eks_cluster.demo.certificate_authority[0].data)
+    #token                  = data.aws_eks_cluster_auth.demo_auth.token
     config_path = "~/.kube/config"
   }
 }
 
 provider "kubernetes" {
-  #host                   = data.aws_eks_cluster.k8s.endpoint
-  # cluster_ca_certificate = base64decode(data.aws_eks_cluster.k8s.certificate_authority[0].data)
-  #token                  = data.aws_eks_cluster_auth.k8s_auth.token
+  #host                   = data.aws_eks_cluster.demo.endpoint
+  # cluster_ca_certificate = base64decode(data.aws_eks_cluster.demo.certificate_authority[0].data)
+  #token                  = data.aws_eks_cluster_auth.demo_auth.token
   #  version          = "2.16.1"
   config_path = "~/.kube/config"
 }
 
 provider "kubectl" {
   load_config_file       = false
-  host                   = data.aws_eks_cluster.k8s.endpoint
-  cluster_ca_certificate = base64decode(data.aws_eks_cluster.k8s.certificate_authority[0].data)
-  token                  = data.aws_eks_cluster_auth.k8s_auth.token
+  host                   = data.aws_eks_cluster.demo.endpoint
+  cluster_ca_certificate = base64decode(data.aws_eks_cluster.demo.certificate_authority[0].data)
+  token                  = data.aws_eks_cluster_auth.demo_auth.token
   config_path            = "~/.kube/config"
 }
