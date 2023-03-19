@@ -39,11 +39,11 @@ resource "aws_iam_role" "cluster" {
 }
 POLICY
 }
-
-resource "aws_iam_role_policy_attachment" "cluster_AmazonEKSClusterPolicy" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
-  role       = aws_iam_role.cluster.name
-}
+# 
+# resource "aws_iam_role_policy_attachment" "cluster_AmazonEKSClusterPolicy" {
+#   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
+#   role       = aws_iam_role.cluster.name
+# }
 
 
 # # EKS Cluster Security Group
@@ -81,7 +81,7 @@ resource "aws_iam_role_policy_attachment" "cluster_AmazonEKSClusterPolicy" {
 # resource "aws_eks_node_group" "k8s_ng" {
 #   cluster_name    = aws_eks_cluster.k8s.name
 #   node_group_name = var.env_prefix
-#   node_role_arn   = aws_iam_role.node.arn
+#   node_role_arn   = aws_iam_role.cluster.arn
 #   subnet_ids      = [aws_subnet.private-1.id, aws_subnet.private-2.id]
 
 #   scaling_config {
@@ -156,23 +156,23 @@ resource "aws_subnet" "private-2" {
 
 resource "aws_iam_role_policy_attachment" "node_AmazonEKSWorkerNodePolicy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
-  role       = aws_iam_role.node.name
+  role       = aws_iam_role.cluster.name
 }
 
 resource "aws_iam_role_policy_attachment" "node_AmazonEKS_CNI_Policy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
-  role       = aws_iam_role.node.name
+  role       = aws_iam_role.test_oidc
 }
 
 resource "aws_iam_role_policy_attachment" "node_AmazonEC2ContainerRegistryReadOnly" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
-  role       = aws_iam_role.node.name
+  role       = aws_iam_role.cluster.name
 }
 
 resource "aws_eks_node_group" "private-nodes" {
   cluster_name    = aws_eks_cluster.k8s.name
   node_group_name = "private-nodes"
-  node_role_arn   = aws_iam_role.node.arn
+  node_role_arn   = aws_iam_role.cluster.arn
   subnet_ids = [
     aws_subnet.private-1.id,
     aws_subnet.private-2.id
@@ -283,11 +283,6 @@ data "aws_iam_policy_document" "test_oidc_assume_role_policy" {
   }
 }
 
-resource "aws_iam_role" "test_oidc" {
-  assume_role_policy = data.aws_iam_policy_document.test_oidc_assume_role_policy.json
-  name               = "test-oidc"
-}
-
 resource "aws_iam_policy" "test-policy" {
   name = "test-policy"
 
@@ -302,13 +297,4 @@ resource "aws_iam_policy" "test-policy" {
     }]
     Version = "2012-10-17"
   })
-}
-
-resource "aws_iam_role_policy_attachment" "test_attach" {
-  role       = aws_iam_role.test_oidc.name
-  policy_arn = aws_iam_policy.test-policy.arn
-}
-
-output "test_policy_arn" {
-  value = aws_iam_role.test_oidc.arn
 }
