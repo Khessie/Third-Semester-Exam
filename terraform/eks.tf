@@ -139,6 +139,7 @@ resource "aws_subnet" "public-2" {
   map_public_ip_on_launch = true
   tags = {
     Name = "${var.env_prefix}_public-2"
+  }
 }
 resource "aws_subnet" "private-1" {
   cidr_block        = "10.0.3.0/24"
