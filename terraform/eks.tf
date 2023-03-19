@@ -3,6 +3,7 @@ resource "aws_eks_cluster" "k8s" {
   name     = "eks-cluster"
   role_arn = aws_iam_role.cluster.arn
   version  = "1.21"
+  count    = 2
 
   vpc_config {
     # security_group_ids      = [aws_security_group.eks_cluster.id, aws_security_group.eks_nodes.id]
