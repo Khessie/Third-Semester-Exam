@@ -15,8 +15,8 @@ module "my-web-vpc" {
   version         = "3.19.0"
   name            = "my-web-vpc"
   cidr            = var.vpc_cidr_block
-  private_subnets = aws_subnet.my-web_subnets[0].id
-  public_subnets  = aws_subnet.private[0].id
+  private_subnets = ["10.0.4.0/24", "10.0.3.0/24"]
+  public_subnets  = ["10.0.2.0/24", "10.0.1.0/24"]
   azs             = data.aws_availability_zones.azs.names
 
   enable_nat_gateway   = true
