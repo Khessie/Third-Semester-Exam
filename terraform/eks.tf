@@ -6,7 +6,7 @@ resource "aws_eks_cluster" "k8s" {
 
   vpc_config {
     # security_group_ids      = [aws_security_group.eks_cluster.id, aws_security_group.eks_nodes.id]
-    subnet_ids              = [aws_subnet.my-web_subnets[count.index].id, aws_subnet.private[count.index].id]
+    subnet_ids              = [aws_subnet.public-1.id, aws_subnet.public-2.id, aws_subnet.private-1.id, aws_subnet.private-2.id]
     endpoint_private_access = true
     endpoint_public_access  = true
     public_access_cidrs     = ["0.0.0.0/0"]
@@ -125,36 +125,35 @@ POLICY
 
 resource "aws_subnet" "public-1" {
   cidr_block              = "10.0.1.0/24"
-  availability_zone       = var.availability_zone[count.index]
+  availability_zone       = var.availability_zone[0]
   vpc_id                  = aws_vpc.my-web_vpc.id
   map_public_ip_on_launch = true
   tags = {
-    Name = "${element(var.subnet_names, count.index % length(var.subnet_names))}-publicsubnet-${count.index / length(var.subnet_names) + 1}"
+    Name = "${var.env_prefix}_public-1"
   }
 }
 resource "aws_subnet" "public-2" {
   cidr_block              = "10.0.2.0/24"
-  availability_zone       = var.availability_zone[count.index]
+  availability_zone       = var.availability_zone[1]
   vpc_id                  = aws_vpc.my-web_vpc.id
   map_public_ip_on_launch = true
   tags = {
-    Name = "${element(var.subnet_names, count.index % length(var.subnet_names))}-publicsubnet-${count.index / length(var.subnet_names) + 1}"
-  }
+    Name = "${var.env_prefix}_public-2"
 }
 resource "aws_subnet" "private-1" {
   cidr_block        = "10.0.3.0/24"
-  availability_zone = var.availability_zone[count.index]
+  availability_zone = var.availability_zone[0]
   vpc_id            = aws_vpc.my-web_vpc.id
   tags = {
-    Name = "${element(var.subnet_names, count.index % length(var.subnet_names))}-privatesubnet-${count.index / length(var.subnet_names) + 1}"
+    Name = "${var.env_prefix}_private-1"
   }
 }
 resource "aws_subnet" "private-2" {
   cidr_block        = "10.0.3.0/24"
-  availability_zone = var.availability_zone[count.index]
+  availability_zone = var.availability_zone[1]
   vpc_id            = aws_vpc.my-web_vpc.id
   tags = {
-    Name = "${element(var.subnet_names, count.index % length(var.subnet_names))}-privatesubnet-${count.index / length(var.subnet_names) + 1}"
+    Name = "${var.env_prefix}_private-2"
   }
 }
 
@@ -177,7 +176,7 @@ resource "aws_eks_node_group" "private-nodes" {
   cluster_name    = aws_eks_cluster.k8s.name
   node_group_name = "private-nodes"
   node_role_arn   = aws_iam_role.node.arn
-  subnet_ids      = [aws_subnet.my-web_subnets[0].id]
+  subnet_ids      = [[aws_subnet.public-1.id, aws_subnet.public-2.id, aws_subnet.private-1.id, aws_subnet.private-2.id]]
 
   capacity_type  = "ON_DEMAND"
   instance_types = ["t3.small"]
@@ -227,7 +226,7 @@ resource "aws_eip" "nat-eip" {
 #NAT Gateway Config
 resource "aws_nat_gateway" "nat_gateway" {
   allocation_id = aws_eip.nat-eip.id
-  subnet_id     = aws_subnet.my-web_subnets[0].id
+  subnet_id     = [aws_subnet.public-1.id, aws_subnet.public-2.id, aws_subnet.private-1.id, aws_subnet.private-2.id]
 
   tags = {
     "Name" = "${var.env_prefix}_nat_gateway"
@@ -250,7 +249,7 @@ resource "aws_route_table" "my-web_route_table" {
 #Route Table and Subnet Association config
 resource "aws_route_table_association" "subnet1" {
   count          = 2
-  subnet_id      = aws_subnet.my-web_subnets[count.index].id
+  subnet_id      = [aws_subnet.public-1.id, aws_subnet.public-2.id, aws_subnet.private-1.id, aws_subnet.private-2.id]
   route_table_id = aws_route_table.my-web_route_table.id
 }
 
