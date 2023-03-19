@@ -95,9 +95,6 @@ resource "aws_eks_node_group" "k8s_ng" {
   disk_size      = 20
   instance_types = ["t2.small"]
 
-  tags = merge(
-    var.tags
-  )
 
   depends_on = [
     aws_iam_role_policy_attachment.node_AmazonEKSWorkerNodePolicy,
@@ -165,11 +162,10 @@ resource "aws_iam_role_policy_attachment" "node_AmazonEC2ContainerRegistryReadOn
 }
 
 resource "aws_eks_node_group" "private-nodes" {
-  cluster_name    = aws_eks_cluster.demo.name
+  cluster_name    = aws_eks_cluster.k8s.name
   node_group_name = "private-nodes"
-  node_role_arn   = aws_iam_role.nodes.arn
-
-  subnet_ids = [aws_subnet.my-web_subnets[0].id]
+  node_role_arn   = aws_iam_role.node.arn
+  subnet_ids      = [aws_subnet.my-web_subnets[0].id]
 
   capacity_type  = "ON_DEMAND"
   instance_types = ["t3.small"]
@@ -191,9 +187,9 @@ resource "aws_eks_node_group" "private-nodes" {
 
 
   depends_on = [
-    aws_iam_role_policy_attachment.nodes-AmazonEKSWorkerNodePolicy,
-    aws_iam_role_policy_attachment.nodes-AmazonEKS_CNI_Policy,
-    aws_iam_role_policy_attachment.nodes-AmazonEC2ContainerRegistryReadOnly,
+    aws_iam_role_policy_attachment.node-AmazonEKSWorkerNodePolicy,
+    aws_iam_role_policy_attachment.node-AmazonEKS_CNI_Policy,
+    aws_iam_role_policy_attachment.node-AmazonEC2ContainerRegistryReadOnly,
   ]
 }
 
@@ -204,6 +200,15 @@ resource "aws_internet_gateway" "my-web_internet_gateway" {
   vpc_id = aws_vpc.my-web_vpc.id
   tags = {
     Name = "${var.env_prefix}_internet_gateway"
+  }
+}
+
+#NAT Elastic IP
+resource "aws_eip" "nat-eip" {
+  vpc = true
+
+  tags = {
+    Name = "${var.env_prefix}_nat_gateway_ip"
   }
 }
 
