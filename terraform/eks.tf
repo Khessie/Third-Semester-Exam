@@ -123,10 +123,8 @@ resource "aws_iam_role" "node" {
 POLICY
 }
 
-resource "aws_subnet" "my-web_subnets" {
-  count = 2
-
-  cidr_block              = "10.0.${count.index + 1}.0/24"
+resource "aws_subnet" "public-1" {
+  cidr_block              = "10.0.1.0/24"
   availability_zone       = var.availability_zone[count.index]
   vpc_id                  = aws_vpc.my-web_vpc.id
   map_public_ip_on_launch = true
@@ -134,11 +132,25 @@ resource "aws_subnet" "my-web_subnets" {
     Name = "${element(var.subnet_names, count.index % length(var.subnet_names))}-publicsubnet-${count.index / length(var.subnet_names) + 1}"
   }
 }
-
-resource "aws_subnet" "private" {
-  count = 2
-
-  cidr_block        = "10.0.${count.index + 3}.0/24"
+resource "aws_subnet" "public-2" {
+  cidr_block              = "10.0.2.0/24"
+  availability_zone       = var.availability_zone[count.index]
+  vpc_id                  = aws_vpc.my-web_vpc.id
+  map_public_ip_on_launch = true
+  tags = {
+    Name = "${element(var.subnet_names, count.index % length(var.subnet_names))}-publicsubnet-${count.index / length(var.subnet_names) + 1}"
+  }
+}
+resource "aws_subnet" "private-1" {
+  cidr_block        = "10.0.3.0/24"
+  availability_zone = var.availability_zone[count.index]
+  vpc_id            = aws_vpc.my-web_vpc.id
+  tags = {
+    Name = "${element(var.subnet_names, count.index % length(var.subnet_names))}-privatesubnet-${count.index / length(var.subnet_names) + 1}"
+  }
+}
+resource "aws_subnet" "private-2" {
+  cidr_block        = "10.0.3.0/24"
   availability_zone = var.availability_zone[count.index]
   vpc_id            = aws_vpc.my-web_vpc.id
   tags = {
