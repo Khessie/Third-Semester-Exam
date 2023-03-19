@@ -112,7 +112,7 @@ POLICY
 }
 
 resource "aws_subnet" "public-1" {
-  cidr_block              = "10.0.11.0/24"
+  cidr_block              = "10.0.64.0/19"
   availability_zone       = var.availability_zone[0]
   vpc_id                  = aws_vpc.my-web_vpc.id
   map_public_ip_on_launch = true
@@ -121,7 +121,7 @@ resource "aws_subnet" "public-1" {
   }
 }
 resource "aws_subnet" "public-2" {
-  cidr_block              = "10.0.24.0/24"
+  cidr_block              = "10.0.96.0/19"
   availability_zone       = var.availability_zone[1]
   vpc_id                  = aws_vpc.my-web_vpc.id
   map_public_ip_on_launch = true
@@ -130,7 +130,7 @@ resource "aws_subnet" "public-2" {
   }
 }
 resource "aws_subnet" "private-1" {
-  cidr_block        = "10.0.98.0/24"
+  cidr_block        = "10.0.0.0/19"
   availability_zone = var.availability_zone[0]
   vpc_id            = aws_vpc.my-web_vpc.id
   tags = {
@@ -138,7 +138,7 @@ resource "aws_subnet" "private-1" {
   }
 }
 resource "aws_subnet" "private-2" {
-  cidr_block        = "10.0.35.0/24"
+  cidr_block        = "10.0.32.0/10"
   availability_zone = var.availability_zone[1]
   vpc_id            = aws_vpc.my-web_vpc.id
   tags = {
@@ -169,8 +169,10 @@ resource "aws_eks_node_group" "private-nodes" {
     aws_subnet.private-1.id,
     aws_subnet.private-2.id
   ]
+
   capacity_type  = "ON_DEMAND"
   instance_types = ["t3.small"]
+
 
   scaling_config {
     desired_size = 2
