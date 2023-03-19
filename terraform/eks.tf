@@ -89,6 +89,7 @@ resource "aws_eks_node_group" "k8s_ng" {
     max_size     = 5
     min_size     = 1
   }
+}
 
 # EKS Node IAM Role
 resource "aws_iam_role" "node" {
@@ -164,12 +165,12 @@ resource "aws_eks_node_group" "private-nodes" {
   cluster_name    = aws_eks_cluster.k8s.name
   node_group_name = "private-nodes"
   node_role_arn   = aws_iam_role.node.arn
-  subnet_ids      = [
-     aws_subnet.private-1.id,
-      aws_subnet.private-2
-      ]
-  capacity_type   = "ON_DEMAND"
-  instance_types  = ["t3.small"]
+  subnet_ids = [
+    aws_subnet.private-1.id,
+    aws_subnet.private-2
+  ]
+  capacity_type  = "ON_DEMAND"
+  instance_types = ["t3.small"]
 
   scaling_config {
     desired_size = 2
