@@ -82,26 +82,13 @@ resource "aws_eks_node_group" "k8s_ng" {
   cluster_name    = aws_eks_cluster.k8s.name
   node_group_name = var.env_prefix
   node_role_arn   = aws_iam_role.node.arn
-  subnet_ids      = aws_subnet.private[*].id
+  subnet_ids      = [aws_subnet.private-1.id, aws_subnet.private-2.id]
 
   scaling_config {
     desired_size = 2
     max_size     = 5
     min_size     = 1
   }
-
-  ami_type       = "AL2_x86_64" # AL2_x86_64, AL2_x86_64_GPU, AL2_ARM_64, CUSTOM
-  capacity_type  = "ON_DEMAND"  # ON_DEMAND, SPOT
-  disk_size      = 20
-  instance_types = ["t2.small"]
-
-
-  depends_on = [
-    aws_iam_role_policy_attachment.node_AmazonEKSWorkerNodePolicy,
-    aws_iam_role_policy_attachment.node_AmazonEKS_CNI_Policy,
-    aws_iam_role_policy_attachment.node_AmazonEC2ContainerRegistryReadOnly,
-  ]
-}
 
 # EKS Node IAM Role
 resource "aws_iam_role" "node" {
@@ -177,10 +164,12 @@ resource "aws_eks_node_group" "private-nodes" {
   cluster_name    = aws_eks_cluster.k8s.name
   node_group_name = "private-nodes"
   node_role_arn   = aws_iam_role.node.arn
-  subnet_ids      = [[aws_subnet.public-1.id, aws_subnet.public-2.id, aws_subnet.private-1.id, aws_subnet.private-2.id]]
-
-  capacity_type  = "ON_DEMAND"
-  instance_types = ["t3.small"]
+  subnet_ids      = [
+     aws_subnet.private-1.id,
+      aws_subnet.private-2
+      ]
+  capacity_type   = "ON_DEMAND"
+  instance_types  = ["t3.small"]
 
   scaling_config {
     desired_size = 2
@@ -227,7 +216,7 @@ resource "aws_eip" "nat-eip" {
 #NAT Gateway Config
 resource "aws_nat_gateway" "nat_gateway" {
   allocation_id = aws_eip.nat-eip.id
-  subnet_id     = [aws_subnet.public-1.id, aws_subnet.public-2.id, aws_subnet.private-1.id, aws_subnet.private-2.id]
+  subnet_id     = aws_subnet.public-1.id
 
   tags = {
     "Name" = "${var.env_prefix}_nat_gateway"
@@ -248,9 +237,20 @@ resource "aws_route_table" "my-web_route_table" {
 }
 
 #Route Table and Subnet Association config
-resource "aws_route_table_association" "subnet1" {
-  count          = 2
-  subnet_id      = [aws_subnet.public-1.id, aws_subnet.public-2.id, aws_subnet.private-1.id, aws_subnet.private-2.id]
+resource "aws_route_table_association" "public-1" {
+  subnet_id      = aws_subnet.public-1.id
+  route_table_id = aws_route_table.my-web_route_table.id
+}
+resource "aws_route_table_association" "public-2" {
+  subnet_id      = aws_subnet.public-2.id
+  route_table_id = aws_route_table.my-web_route_table.id
+}
+resource "aws_route_table_association" "private-1" {
+  subnet_id      = aws_subnet.private-1.id
+  route_table_id = aws_route_table.my-web_route_table.id
+}
+resource "aws_route_table_association" "private-2" {
+  subnet_id      = aws_subnet.private.id
   route_table_id = aws_route_table.my-web_route_table.id
 }
 
