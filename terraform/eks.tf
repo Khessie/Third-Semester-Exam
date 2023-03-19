@@ -78,38 +78,38 @@ resource "aws_iam_role_policy_attachment" "cluster_AmazonEKSClusterPolicy" {
 # }
 
 # EKS Node Groups
-resource "aws_eks_node_group" "k8s_ng" {
-  cluster_name    = aws_eks_cluster.k8s.name
-  node_group_name = var.env_prefix
-  node_role_arn   = aws_iam_role.node.arn
-  subnet_ids      = [aws_subnet.private-1.id, aws_subnet.private-2.id]
+# resource "aws_eks_node_group" "k8s_ng" {
+#   cluster_name    = aws_eks_cluster.k8s.name
+#   node_group_name = var.env_prefix
+#   node_role_arn   = aws_iam_role.node.arn
+#   subnet_ids      = [aws_subnet.private-1.id, aws_subnet.private-2.id]
 
-  scaling_config {
-    desired_size = 2
-    max_size     = 5
-    min_size     = 1
-  }
-}
+#   scaling_config {
+#     desired_size = 2
+#     max_size     = 5
+#     min_size     = 1
+#   }
+# }
 
-# EKS Node IAM Role
-resource "aws_iam_role" "node" {
-  name = "${var.env_prefix}-Role"
+# # EKS Node IAM Role
+# resource "aws_iam_role" "node" {
+#   name = "${var.env_prefix}-Role"
 
-  assume_role_policy = <<POLICY
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Principal": {
-        "Service": "ec2.amazonaws.com"
-      },
-      "Action": "sts:AssumeRole"
-    }
-  ]
-}
-POLICY
-}
+#   assume_role_policy = <<POLICY
+# {
+#   "Version": "2012-10-17",
+#   "Statement": [
+#     {
+#       "Effect": "Allow",
+#       "Principal": {
+#         "Service": "ec2.amazonaws.com"
+#       },
+#       "Action": "sts:AssumeRole"
+#     }
+#   ]
+# }
+# POLICY
+# }
 
 resource "aws_subnet" "public-1" {
   cidr_block              = "10.0.64.0/19"
@@ -117,7 +117,9 @@ resource "aws_subnet" "public-1" {
   vpc_id                  = aws_vpc.my-web_vpc.id
   map_public_ip_on_launch = true
   tags = {
-    Name = "${var.env_prefix}_public-1"
+    Name                              = "${var.env_prefix}_public-1"
+    "kubernetes.io/role/internal-elb" = "1"
+    "kubernetes.io/cluster/demo"      = "owned"
   }
 }
 resource "aws_subnet" "public-2" {
@@ -126,7 +128,9 @@ resource "aws_subnet" "public-2" {
   vpc_id                  = aws_vpc.my-web_vpc.id
   map_public_ip_on_launch = true
   tags = {
-    Name = "${var.env_prefix}_public-2"
+    Name                              = "${var.env_prefix}_public-2"
+    "kubernetes.io/role/internal-elb" = "1"
+    "kubernetes.io/cluster/demo"      = "owned"
   }
 }
 resource "aws_subnet" "private-1" {
@@ -134,7 +138,9 @@ resource "aws_subnet" "private-1" {
   availability_zone = var.availability_zone[0]
   vpc_id            = aws_vpc.my-web_vpc.id
   tags = {
-    Name = "${var.env_prefix}_private-1"
+    Name                              = "${var.env_prefix}_private-1"
+    "kubernetes.io/role/internal-elb" = "1"
+    "kubernetes.io/cluster/demo"      = "owned"
   }
 }
 resource "aws_subnet" "private-2" {
@@ -142,7 +148,9 @@ resource "aws_subnet" "private-2" {
   availability_zone = var.availability_zone[1]
   vpc_id            = aws_vpc.my-web_vpc.id
   tags = {
-    Name = "${var.env_prefix}_private-2"
+    Name                              = "${var.env_prefix}_private-2"
+    "kubernetes.io/role/internal-elb" = "1"
+    "kubernetes.io/cluster/demo"      = "owned"
   }
 }
 
