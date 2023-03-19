@@ -3,11 +3,10 @@ resource "aws_eks_cluster" "k8s" {
   name     = "eks-cluster"
   role_arn = aws_iam_role.cluster.arn
   version  = "1.21"
-  count    = 2
 
   vpc_config {
     # security_group_ids      = [aws_security_group.eks_cluster.id, aws_security_group.eks_nodes.id]
-    subnet_ids              = [aws_subnet.my-web_subnets[count.index], aws_subnet.private[count.index]]
+    subnet_ids              = [aws_subnet.my-web_subnets[count.index].id, aws_subnet.private[count.index].id]
     endpoint_private_access = true
     endpoint_public_access  = true
     public_access_cidrs     = ["0.0.0.0/0"]
