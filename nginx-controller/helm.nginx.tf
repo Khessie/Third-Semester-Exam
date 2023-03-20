@@ -4,7 +4,7 @@ resource "time_sleep" "wait_for_kubernetes" {
     data.aws_eks_cluster.demo
   ]
 
-  create_duration = "20s"
+  create_duration = "30s"
 }
 
 resource "kubernetes_namespace" "nginx-namespace" {
