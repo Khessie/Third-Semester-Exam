@@ -1,6 +1,6 @@
 resource "kubernetes_ingress_v1" "voting-ingress" {
   metadata {
-    name      = "azure-vote-front"
+    name = "azure-vote-front"
     labels = {
       name = "azure-vote-front"
     }
@@ -11,11 +11,11 @@ resource "kubernetes_ingress_v1" "voting-ingress" {
 
   spec {
     rule {
-      host = "voting.nwokolo.live"
+      host = "voting.khessie.live"
       http {
         path {
           backend {
-            service{
+            service {
               name = "azure-vote-front"
               port {
                 number = 80
@@ -42,11 +42,11 @@ resource "kubernetes_ingress_v1" "micro-ingress" {
 
   spec {
     rule {
-      host = "sock-shop.nwokolo.live"
+      host = "sock-shop.khessie.live"
       http {
         path {
           backend {
-            service{
+            service {
               name = "front-end"
               port {
                 number = 80
