@@ -16,7 +16,7 @@ resource "kubernetes_namespace" "nginx-namespace" {
 }
 
 resource "helm_release" "ingress_nginx" {
-  # depends_on = [kubernetes_namespace.nginx-namespace, time_sleep.wait_for_kubernetes]
+  depends_on = [kubernetes_namespace.nginx-namespace, time_sleep.wait_for_kubernetes]
   name       = "ingress-nginx"
   repository = "https://kubernetes.github.io/ingress-nginx"
   chart      = "ingress-nginx"
@@ -24,7 +24,6 @@ resource "helm_release" "ingress_nginx" {
 
   namespace        = kubernetes_namespace.nginx-namespace.id
   create_namespace = true
-  wait             = false
 
   values = [
     file("values.yaml")
