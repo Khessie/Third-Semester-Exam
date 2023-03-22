@@ -54,3 +54,5 @@ provider "kubectl" {
   token                  = data.aws_eks_cluster_auth.demo_auth.token
   config_path            = "~/.kube/config"
 }
+
+# omo
