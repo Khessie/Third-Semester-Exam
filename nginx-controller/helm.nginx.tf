@@ -24,6 +24,7 @@ resource "helm_release" "ingress_nginx" {
 
   namespace        = kubernetes_namespace.nginx-namespace.id
   create_namespace = true
+  wait             = false
 
   values = [
     file("values.yaml")
