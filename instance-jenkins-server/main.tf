@@ -7,7 +7,7 @@ resource "aws_instance" "my-web" {
   security_groups             = [aws_security_group.my-web_security_group.id]
   availability_zone           = var.availability_zone[0]
   associate_public_ip_address = true
-  user_data                   = file("installation-script.sh")
+  user_data                   = file("script.sh")
   tags = {
     Name = "${var.env_prefix}-server"
   }
@@ -148,73 +148,6 @@ resource "aws_security_group" "my-web_security_group" {
 
 }
 
-# # Security group for data plane
-# resource "aws_security_group" "data_plane_sg" {
-#   name   = "${var.env_prefix}_worker_sg"
-#   vpc_id = aws_vpc.my-web_vpc.id
-
-#   tags = {
-#     Name = "${var.env_prefix}_worker_sg"
-#   }
-# }
-
-# resource "aws_security_group_rule" "nodes_rule" {
-#   type              = "ingress"
-#   description       = "Allow nodes communicate with each other"
-#   from_port         = 0
-#   to_port           = 65535
-#   protocol          = "-1"
-#   cidr_blocks       = ["0.0.0.0/0"]
-#   security_group_id = aws_security_group.data_plane_sg.id
-# }
-
-# resource "aws_security_group_rule" "nodes_inbound" {
-#   type              = "ingress"
-#   description       = "Allow Kubelets and pods communicate with the clusters"
-#   from_port         = 1025
-#   to_port           = 65535
-#   protocol          = "tcp"
-#   cidr_blocks       = ["0.0.0.0/0"]
-#   security_group_id = aws_security_group.data_plane_sg.id
-# }
-
-# resource "aws_security_group_rule" "nodes_outbound" {
-#   type              = "egress"
-#   from_port         = 0
-#   to_port           = 0
-#   protocol          = "-1"
-#   cidr_blocks       = ["0.0.0.0/0"]
-#   security_group_id = aws_security_group.data_plane_sg.id
-# }
-
-# # Security group for control plane
-# resource "aws_security_group" "control_plane_sg" {
-#   name   = "${var.env_prefix}-ControlPlane-sg"
-#   vpc_id = aws_vpc.my-web_vpc.id
-
-#   tags = {
-#     Name = "${var.env_prefix}-ControlPlane-sg"
-#   }
-# }
-
-# # Security group traffic rules
-# resource "aws_security_group_rule" "control_plane_inbound" {
-#   security_group_id = aws_security_group.control_plane_sg.id
-#   type              = "ingress"
-#   from_port         = 0
-#   to_port           = 65535
-#   protocol          = "tcp"
-#   cidr_blocks       = ["0.0.0.0/0"]
-# }
-
-# resource "aws_security_group_rule" "control_plane_outbound" {
-#   security_group_id = aws_security_group.control_plane_sg.id
-#   type              = "egress"
-#   from_port         = 0
-#   to_port           = 65535
-#   protocol          = "-1"
-#   cidr_blocks       = ["0.0.0.0/0"]
-# }
 
 
 
