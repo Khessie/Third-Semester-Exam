@@ -4,14 +4,6 @@ variable "aws_region" {
   description = "Sets the aws region"
 }
 
-# variable "access_key" {
-#   default = "AKIARQYDZHD2IBQOICNY"
-# }
-
-# variable "secret_key" {
-#   default = "G3AeOvaUh++HySaPtnGl22NOO7uB2HyYYnfxAU+H"
-# }
-
 variable "availability_zone" {
   default = "eu-west-2a"
 }
