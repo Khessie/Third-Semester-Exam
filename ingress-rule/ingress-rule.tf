@@ -1,4 +1,4 @@
-resource "kubernetes_ingress_v1" "votingapp-ingress" {
+resource "kubernetes_ingress_v1" "voting-ingress" {
   metadata {
     name = "azure-vote-front"
     labels = {
@@ -11,7 +11,7 @@ resource "kubernetes_ingress_v1" "votingapp-ingress" {
 
   spec {
     rule {
-      host = "votingapp.khessie.live"
+      host = "voting.khessie.live"
       http {
         path {
           backend {
@@ -28,7 +28,7 @@ resource "kubernetes_ingress_v1" "votingapp-ingress" {
   }
 }
 
-resource "kubernetes_ingress_v1" "sockshop-ingress" {
+resource "kubernetes_ingress_v1" "micro-ingress" {
   metadata {
     name      = "sock-shop"
     namespace = "sock-shop"
@@ -42,7 +42,7 @@ resource "kubernetes_ingress_v1" "sockshop-ingress" {
 
   spec {
     rule {
-      host = "sockshop.khessie.live"
+      host = "sock-shop.khessie.live"
       http {
         path {
           backend {
