@@ -21,3 +21,10 @@ To recreate this setup, you'll need to provision the following components:
   
 
 This project emphasizes readability, maintainability, and DevOps methodologies. I've used Terraform as the configuration management tool to automate the deployment process.
+
+1. Screenshot of the sock-shop microservice app - sock-shop.khessie.live
+![image](https://user-images.githubusercontent.com/83411128/227596987-fa7b8a03-9e89-4e20-b83a-a7e0efd4cf44.png)
+
+2. Screenshot of the second app - voting app - voting.khessie.live
+ ![image](https://user-images.githubusercontent.com/83411128/227597283-36cc3ae7-01ff-4860-a771-bf4423b5b1e2.png)
+
